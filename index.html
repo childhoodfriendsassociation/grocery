@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আয়ানজ ডিজিটাল মুদি দোকান - স্টক, লাভ-ক্ষতি ও এক্সেল ব্যাকআপ</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f6f9; padding: 20px; color: #333; }
+        header { background: #1e824c; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        .bismillah { font-size: 20px; font-weight: bold; font-family: 'Amiri', 'Traditional Arabic', serif; margin-bottom: 8px; color: #f1c40f; }
+        header h1 { font-size: 22px; }
+        header p { font-size: 13px; color: #d4efdf; margin-top: 5px; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .dash-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .dash-card h3 { font-size: 13px; color: #7f8c8d; margin-bottom: 5px; }
+        .dash-card p { font-size: 20px; font-weight: bold; color: #2c3e50; }
+        .dash-card.profit p { color: #27ae60; }
+        
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h2 { font-size: 18px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        
+        form div { margin-bottom: 10px; }
+        label { display: block; font-size: 13px; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { background: #219150; }
+        .btn-excel { background: #1d6f42; width: auto; font-size: 12px; padding: 6px 12px; }
+        .btn-excel:hover { background: #144d2e; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        
+        .badge-no-credit { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; display: inline-block; margin-bottom: 10px; }
+        .scanner-box { background: #e8f8f5; border: 2px dashed #27ae60; padding: 12px; margin-bottom: 15px; border-radius: 6px; }
+        .notice-box { background: #fde8e8; border-left: 4px solid #e74c3c; padding: 10px; margin-top: 15px; font-size: 13px; color: #c0392b; }
+        
+        .total-area { font-size: 18px; font-weight: bold; text-align: right; margin-top: 15px; color: #2c3e50; }
+        .pay-btn { background: #2980b9; margin-top: 10px; font-size: 16px; }
+        .pay-btn:hover { background: #2471a3; }
+
+        /* ফুটার স্টাইল */
+        footer { margin-top: 30px; padding: 20px; background: white; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .footer-line-1 { font-size: 24px; font-weight: bold; color: #e74c3c; margin-bottom: 8px; text-transform: uppercase; }
+        .footer-line-2 { font-size: 16px; font-weight: 600; color: #27ae60; margin-bottom: 10px; }
+        .footer-line-3 { font-size: 12px; color: #7f8c8d; border-top: 1px solid #ecf0f1; padding-top: 10px; margin-top: 10px; }
+
+        /* প্রিন্ট ক্যাশমেমো */
+        #printableMemo { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableMemo, #printableMemo * { visibility: visible; }
+            #printableMemo { display: block; position: absolute; left: 0; top: 0; width: 80mm; font-size: 12px; color: #000; }
+            #printableMemo h2 { font-size: 16px; text-align: center; }
+            #printableMemo table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            #printableMemo th, #printableMemo td { border-bottom: 1px dashed #000; padding: 4px 0; border-top: none; border-left: none; border-right: none; }
+            #printableMemo .memo-bismillah { text-align: center; font-size: 12px; margin-bottom: 5px; }
+            #printableMemo .memo-footer-no-credit { color: #e74c3c; font-weight: bold; font-size: 14px; text-align: center; margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="mainUI">
+    <header>
+        <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+        <h1>আয়ানজ ডিজিটাল মুদি দোকান</h1>
+        <p>স্মার্ট ইনভেন্টরি, লাভ-ক্ষতি হিসাব ও এক্সেল ব্যাকআপ</p>
+    </header>
+
+    <!-- লাভ-ক্ষতি ড্যাশবোর্ড -->
+    <div class="dashboard">
+        <div class="dash-card">
+            <h3>মোট বিক্রি (Sales)</h3>
+            <p>৳<span id="dashSales">০</span></p>
+        </div>
+        <div class="dash-card">
+            <h3>মোট কেনা খরচ (Cost)</h3>
+            <p>৳<span id="dashCost">০</span></p>
+        </div>
+        <div class="dash-card profit">
+            <h3>মোট লাভ (Profit)</h3>
+            <p>৳<span id="dashProfit">০</span></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ইনভেন্টরি সেকশন -->
+        <div class="card">
+            <h2>
+                পণ্য যোগ করুন
+                <button class="btn-excel" onclick="exportInventoryToExcel()">📊 এক্সেল ব্যাকআপ ডাউনলোড</button>
+            </h2>
+            <form id="productForm">
+                <div>
+                    <label>বারকোড (Barcode)</label>
+                    <input type="text" id="prodBarcode" placeholder="স্ক্যান করুন বা লিখুন" required>
+                </div>
+                <div>
+                    <label>পণ্যের নাম</label>
+                    <input type="text" id="prodName" placeholder="যেমন: মিনিকেট চাল" required>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>ক্রয় মূল্য (টাকা)</label>
+                        <input type="number" id="prodBuyPrice" min="0" step="0.01" placeholder="যেমন: ১০০" required>
+                    </div>
+                    <div>
+                        <label>বিক্রয় মূল্য (টাকা)</label>
+                        <input type="number" id="prodSellPrice" min="0" step="0.01" placeholder="যেমন: ১২০" required>
+                    </div>
+                </div>
+                <div>
+                    <label>মজুদ পরিমাণ</label>
+                    <input type="number" id="prodQty" min="1" placeholder="যেমন: ৫০" required>
+                </div>
+                <button type="submit">স্টকে যোগ করুন</button>
+            </form>
+
+            <h2 style="margin-top: 25px;">বর্তমান স্টক (Inventory)</h2>
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>বারকোড</th>
+                        <th>পণ্য</th>
+                        <th>ক্রয়</th>
+                        <th>বিক্রয়</th>
+                        <th>স্টক</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- বিক্রয় ও ক্যাশ কাউন্টার -->
+        <div class="card">
+            <span class="badge-no-credit">বাকি সম্পূর্ণ বন্ধ</span>
+            <h2>বিক্রি / ক্যাশ কাউন্টার (POS)</h2>
+            
+            <div class="scanner-box">
+                <label style="color: #27ae60;">⚡ বারকোড স্ক্যানার ইনপুট (Auto-Scan):</label>
+                <input type="text" id="barcodeScanner" placeholder="এখানে কার্সার রেখে স্ক্যান করুন..." autofocus>
+            </div>
+
+            <form id="cartForm">
+                <div>
+                    <label>অথবা ম্যানুয়ালি পণ্য বেছে নিন</label>
+                    <select id="cartProduct">
+                        <option value="">পণ্য বেছে নিন...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>পরিমাণ</label>
+                    <input type="number" id="cartQty" min="1" value="1" required>
+                </div>
+                <button type="submit" style="background: #e67e22;">কার্টে যোগ করুন</button>
+            </form>
+
+            <h2 style="margin-top: 25px;">চলতি কার্ট / বিল</h2>
+            <table id="cartTable">
+                <thead>
+                    <tr>
+                        <th>পণ্য</th>
+                        <th>পরিমাণ</th>
+                        <th>মোট</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="total-area">
+                সর্বমোট: <span id="grandTotal">০</span> টাকা
+            </div>
+
+            <button class="pay-btn" onclick="checkoutAndPrint()">নগদে পেমেন্ট গ্রহণ ও মেমো প্রিন্ট করুন</button>
+
+            <div class="notice-box">
+                <strong>বাকির কোনো অপশন নেই:</strong> এই সিস্টেমে সম্পূর্ণ ক্যাশ রিসিভ করার পর বিক্রি সম্পন্ন হয় এবং লাভ স্বয়ংক্রিয়ভাবে হিসাব হয়।
+            </div>
+        </div>
+    </div>
+
+    <!-- ফুটার সেকশন -->
+    <footer>
+        <div class="footer-line-1">বাকি বিক্রি হয় না</div>
+        <div class="footer-line-2">অল্প লভ্যাংশের দোকান</div>
+        <div class="footer-line-3">© সর্বস্বত্ব সংরক্ষিত - আয়ানজ ডিজিটাল মুদি দোকান</div>
+    </footer>
+</div>
+
+<!-- প্রিন্ট করার জন্য হিডেন ক্যাশমেমো এরিয়া -->
+<div id="printableMemo">
+    <div class="memo-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+    <h2>ডিজিটাল মুদি দোকান</h2>
+    <p style="text-align:center; font-size:10px;">মোহাম্মদপুর, ঢাকা | মোবাইল: ০১XXXXXXXXX</p>
+    <p style="text-align:center; margin-bottom:10px;">------------------------------------</p>
+    <p>তারিখ: <span id="memoDate"></span></p>
+    <p>মেমো নং: <span id="memoNo"></span></p>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left;">আইটেম</th>
+                <th style="text-align:center;">পরিমাণ</th>
+                <th style="text-align:right;">মূল্য</th>
+            </tr>
+        </thead>
+        <tbody id="memoBody"></tbody>
+    </table>
+    <h3 style="text-align:right; margin-top:10px;">সর্বমোট: ৳<span id="memoTotal"></span></h3>
+    <div class="memo-footer-no-credit">*** বাকি বিক্রি হয় না ***</div>
+    <p style="text-align:center; margin-top:5px; font-size:10px;">অল্প লভ্যাংশের দোকান<br>ধন্যবাদ আবার আসবেন!</p>
+</div>
+
+<script>
+    let inventory = JSON.parse(localStorage.getItem('grocery_inventory_v3')) || [];
+    let salesHistory = JSON.parse(localStorage.getItem('grocery_sales_v3')) || [];
+    let cart = [];
+
+    const productForm = document.getElementById('productForm');
+    const cartForm = document.getElementById('cartForm');
+    const inventoryTable = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+    const cartTable = document.getElementById('cartTable').getElementsByTagName('tbody')[0];
+    const cartProductSelect = document.getElementById('cartProduct');
+    const grandTotalSpan = document.getElementById('grandTotal');
+    const barcodeScannerInput = document.getElementById('barcodeScanner');
+
+    // UI ও ড্যাশবোর্ড আপডেট
+    function updateUI() {
+        inventoryTable.innerHTML = '';
+        cartProductSelect.innerHTML = '<option value="">পণ্য বেছে নিন...</option>';
+
+        inventory.forEach((item, index) => {
+            let row = inventoryTable.insertRow();
+            row.innerHTML = `<td><code>${item.barcode}</code></td><td>${item.name}</td><td>৳${item.buyPrice}</td><td>৳${item.sellPrice}</td><td>${item.qty}</td>`;
+
+            if(item.qty > 0) {
+                let option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${item.name} (৳${item.sellPrice} - স্টক: ${item.qty})`;
+                cartProductSelect.appendChild(option);
+            }
+        });
+
+        calculateProfitDashboard();
+        localStorage.setItem('grocery_inventory_v3', JSON.stringify(inventory));
+        localStorage.setItem('grocery_sales_v3', JSON.stringify(salesHistory));
+    }
+
+    // লাভ-ক্ষতি হিসাব
+    function calculateProfitDashboard() {
+        let totalSales = 0;
+        let totalCost = 0;
+
+        salesHistory.forEach(sale => {
+            totalSales += sale.sellTotal;
+            totalCost += sale.buyTotal;
+        });
+
+        let profit = totalSales - totalCost;
+
+        document.getElementById('dashSales').textContent = totalSales.toFixed(2);
+        document.getElementById('dashCost').textContent = totalCost.toFixed(2);
+        document.getElementById('dashProfit').textContent = profit.toFixed(2);
+    }
+
+    // পণ্য যোগ / আপডেট
+    productForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const barcode = document.getElementById('prodBarcode').value.trim();
+        const name = document.getElementById('prodName').value;
+        const buyPrice = parseFloat(document.getElementById('prodBuyPrice').value);
+        const sellPrice = parseFloat(document.getElementById('prodSellPrice').value);
+        const qty = parseInt(document.getElementById('prodQty').value);
+
+        const existingIndex = inventory.findIndex(i => i.barcode === barcode);
+        if(existingIndex > -1) {
+            inventory[existingIndex].qty += qty;
+            inventory[existingIndex].buyPrice = buyPrice;
+            inventory[existingIndex].sellPrice = sellPrice;
+            inventory[existingIndex].name = name;
+        } else {
+            inventory.push({ barcode, name, buyPrice, sellPrice, qty });
+        }
+
+        productForm.reset();
+        updateUI();
+        barcodeScannerInput.focus();
+    });
+
+    // বারকোড অটো স্ক্যান
+    barcodeScannerInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const scannedCode = this.value.trim();
+            if(!scannedCode) return;
+
+            const prodIndex = inventory.findIndex(i => i.barcode === scannedCode);
+            if (prodIndex > -1) {
+                addToCart(prodIndex, 1);
+                this.value = '';
+            } else {
+                alert('এই বারকোডের কোনো পণ্য পাওয়া যায়নি!');
+                this.value = '';
+            }
+        }
+    });
+
+    // ম্যানুয়াল ড্রপডাউন থেকে কার্টে যোগ
+    cartForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const index = cartProductSelect.value;
+        const qty = parseInt(document.getElementById('cartQty').value);
+        if(index === '') return;
+        addToCart(index, qty);
+    });
+
+    function addToCart(index, qty) {
+        const product = inventory[index];
+        const existingCartItem = cart.find(c => c.inventoryIndex == index);
+        const currentQtyInCart = existingCartItem ? existingCartItem.qty : 0;
+
+        if((currentQtyInCart + qty) > product.qty) {
+            alert('পর্যাপ্ত স্টক নেই!');
+            return;
+        }
+
+        if(existingCartItem) {
+            existingCartItem.qty += qty;
+            existingCartItem.total = existingCartItem.qty * product.sellPrice;
+            existingCartItem.buyTotal = existingCartItem.qty * product.buyPrice;
+        } else {
+            cart.push({
+                inventoryIndex: index,
+                name: product.name,
+                buyPrice: product.buyPrice,
+                sellPrice: product.sellPrice,
+                qty: qty,
+                total: product.sellPrice * qty,
+                buyTotal: product.buyPrice * qty
+            });
+        }
+
+        renderCart();
+    }
+
+    function renderCart() {
+        cartTable.innerHTML = '';
+        let grandTotal = 0;
+
+        cart.forEach((item) => {
+            let row = cartTable.insertRow();
+            row.innerHTML = `<td>${item.name}</td><td>${item.qty}</td><td>৳${item.total}</td>`;
+            grandTotal += item.total;
+        });
+
+        grandTotalSpan.textContent = grandTotal;
+    }
+
+    // বিক্রি সম্পন্ন করা ও মেমো প্রিন্ট
+    function checkoutAndPrint() {
+        if(cart.length === 0) {
+            alert('কার্ট খালি!');
+            return;
+        }
+
+        let grandTotal = parseFloat(grandTotalSpan.textContent);
+        let confirmPay = confirm(`সর্বমোট ৳${grandTotal} টাকা নগদে গ্রহণ করেছেন?`);
+
+        if(confirmPay) {
+            document.getElementById('memoDate').textContent = new Date().toLocaleDateString('bn-BD') + ' ' + new Date().toLocaleTimeString('bn-BD');
+            document.getElementById('memoNo').textContent = 'INV-' + Math.floor(100000 + Math.random() * 900000);
+            
+            const memoBody = document.getElementById('memoBody');
+            memoBody.innerHTML = '';
+            
+            cart.forEach(item => {
+                let row = `<tr>
+                    <td style="text-align:left;">${item.name}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">৳${item.total}</td>
+                </tr>`;
+                memoBody.innerHTML += row;
+
+                // সেলস হিস্টোরিতে লাভ রেকর্ডিং
+                salesHistory.push({
+                    name: item.name,
+                    qty: item.qty,
+                    buyTotal: item.buyTotal,
+                    sellTotal: item.total,
+                    profit: item.total - item.buyTotal,
+                    date: new Date().toISOString()
+                });
+
+                // স্টক কমানো
+                inventory[item.inventoryIndex].qty -= item.qty;
+            });
+
+            document.getElementById('memoTotal').textContent = grandTotal;
+
+            window.print();
+
+            cart = [];
+            renderCart();
+            updateUI();
+            barcodeScannerInput.focus();
+        }
+    }
+
+    // এক্সেল (CSV) ব্যাকআপ এক্সপোর্ট
+    function exportInventoryToExcel() {
+        if (inventory.length === 0) {
+            alert('ডাউনলোড করার মতো কোনো ইনভেন্টরি ডাটা নেই!');
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // UTF-8 BOM Bangla Support
+        csvContent += "Barcode,Product Name,Buying Price,Selling Price,Stock Quantity\n";
+
+        inventory.forEach(item => {
+            let row = `"${item.barcode}","${item.name}",${item.buyPrice},${item.sellPrice},${item.qty}`;
+            csvContent += row + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Grocery_Stock_Backup_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    updateUI();
+</script>
+
+</body>
+</html>
