@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আয়ানজ ডিজিটাল গ্রোসেরি - POS & স্টক ম্যানেজমেন্ট</title>
+    <title>রাজু ডিজিটাল মুদি স্টোর - POS & স্টক ম্যানেজমেন্ট</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; padding: 20px; color: #333; }
@@ -50,7 +50,7 @@
         .footer-line-2 { font-size: 16px; font-weight: 600; color: #27ae60; margin-bottom: 10px; }
         .footer-line-3 { font-size: 12px; color: #7f8c8d; border-top: 1px solid #ecf0f1; padding-top: 10px; margin-top: 10px; }
 
-        /* প্রিন্ট ক্যাশমেমো */
+        /* প্রিন্ট ক্যাশ মেমো */
         #printableMemo { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -70,25 +70,25 @@
 
 <div id="mainUI">
     <header>
-        <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-        <h1>আয়ানজ ডিজিটাল গ্রোসেরি</h1>
-        <p>স্মার্ট ইনভেন্টরি, লাভ-ক্ষতি হিসাব ও এক্সেল ব্যাকআপ</p>
+        <div class="bismillah">বিসমিল্লাহির রহমানির রহিম</div>
+        <h1>রাজু ডিজিটাল মুদি স্টোর</h1>
+        <p>পাইকারি ও খুচরা বিক্রেতা, চাল-ডাল ও যাবতীয় মুদি মালামাল</p>
     </header>
 
-    <!-- ১. ওপরের সেকশন: বিক্রয় ও ক্যাশ কাউন্টার (POS) -->
+    <!-- ১. বিক্রয় কাউন্টার: বারকোড ও ম্যানুয়াল বিলিং (POS) -->
     <div class="card">
         <span class="badge-no-credit">বাকি সম্পূর্ণ বন্ধ</span>
-        <h2>বিক্রি / ক্যাশ কাউন্টার (POS)</h2>
+        <h2>বিক্রয় / ক্যাশ কাউন্টার (POS)</h2>
         
         <div class="scanner-box">
-            <label style="color: #27ae60;">⚡ বারকোড স্ক্যানার ইনপুট (Auto-Scan):</label>
-            <input type="text" id="barcodeScanner" placeholder="এখানে কার্সার রেখে স্ক্যান করুন..." autofocus>
+            <label style="color: #27ae60;">বারকোড স্ক্যানার ইনপুট (Auto-Scan):</label>
+            <input type="text" id="barcodeScanner" placeholder="বারকোড স্ক্যান করুন..." autofocus>
         </div>
 
         <form id="cartForm">
             <div class="form-row">
                 <div>
-                    <label>অথবা ম্যানুয়ালি পণ্য বেছে নিন</label>
+                    <label>অথবা পণ্য নির্বাচন করুন</label>
                     <select id="cartProduct">
                         <option value="">পণ্য বেছে নিন...</option>
                     </select>
@@ -101,26 +101,26 @@
             <button type="submit" style="background: #e67e22; margin-top: 5px;">কার্টে যোগ করুন</button>
         </form>
 
-        <h2 style="margin-top: 25px;">চলতি কার্ট / বিল</h2>
+        <h2 style="margin-top: 25px;">বর্তমান কার্ট / বিল</h2>
         <table id="cartTable">
             <thead>
                 <tr>
                     <th>পণ্য</th>
                     <th>পরিমাণ</th>
-                    <th>মোট</th>
+                    <th>মূল্য</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
 
         <div class="total-area">
-            সর্বমোট: <span id="grandTotal">০</span> টাকা
+            সর্বমোট: <span id="grandTotal">0</span> টাকা
         </div>
 
-        <button class="pay-btn" onclick="checkoutAndPrint()">নগদে পেমেন্ট গ্রহণ ও মেমো প্রিন্ট করুন</button>
+        <button class="pay-btn" onclick="checkoutAndPrint()">বিল পরিশোধ ও মেমো প্রিন্ট করুন</button>
 
         <div class="notice-box">
-            <strong>বাকির কোনো অপশন নেই:</strong> এই সিস্টেমে সম্পূর্ণ ক্যাশ রিসিভ করার পর বিক্রি সম্পন্ন হয় এবং লাভ স্বয়ংক্রিয়ভাবে হিসাব হয়।
+            <strong>বিশেষ সতর্ক বার্তা:</strong> পণ্য ক্রয়ের পর অবশ্যই ক্যাশমেমো বুঝে নিবেন। ক্যাশমেমো ছাড়া পণ্য ফেরত নেওয়া হবে না।
         </div>
     </div>
 
@@ -128,50 +128,50 @@
     <div class="dashboard">
         <div class="dash-card">
             <h3>মোট বিক্রি (Sales)</h3>
-            <p>৳<span id="dashSales">০</span></p>
+            <p>৳<span id="dashSales">0</span></p>
         </div>
         <div class="dash-card">
             <h3>মোট কেনা খরচ (Cost)</h3>
-            <p>৳<span id="dashCost">০</span></p>
+            <p>৳<span id="dashCost">0</span></p>
         </div>
         <div class="dash-card profit">
             <h3>মোট লাভ (Profit)</h3>
-            <p>৳<span id="dashProfit">০</span></p>
+            <p>৳<span id="dashProfit">0</span></p>
         </div>
     </div>
 
-    <!-- ৩. নিচের সেকশন: স্টক এড ও ইনভেন্টরি ম্যানেজমেন্ট -->
+    <!-- ৩. স্টক ও ইনভেন্টরি ম্যানেজমেন্ট -->
     <div class="card">
         <h2>
-            পণ্য যোগ করুন (স্টক ইন)
-            <button class="btn-excel" onclick="exportInventoryToExcel()">📊 এক্সেল ব্যাকআপ ডাউনলোড</button>
+            পণ্য এন্ট্রি (স্টক জমা)
+            <button class="btn-excel" onclick="exportInventoryToExcel()">এক্সেল রিপোর্ট ডাউনলোড</button>
         </h2>
         <form id="productForm">
             <div class="form-row">
                 <div>
                     <label>বারকোড (Barcode)</label>
-                    <input type="text" id="prodBarcode" placeholder="স্ক্যান করুন বা লিখুন" required>
+                    <input type="text" id="prodBarcode" placeholder="বারকোড স্ক্যান বা লিখুন" required>
                 </div>
                 <div>
                     <label>পণ্যের নাম</label>
-                    <input type="text" id="prodName" placeholder="যেমন: মিনিকেট চাল" required>
+                    <input type="text" id="prodName" placeholder="যেমন: সয়াবিন তেল" required>
                 </div>
             </div>
             <div class="form-row">
                 <div>
-                    <label>ক্রয় মূল্য (টাকা)</label>
-                    <input type="number" id="prodBuyPrice" min="0" step="0.01" placeholder="যেমন: ১০০" required>
+                    <label>ক্রয়মূল্য (টাকা)</label>
+                    <input type="number" id="prodBuyPrice" min="0" step="0.01" placeholder="যেমন: ১৩০" required>
                 </div>
                 <div>
-                    <label>বিক্রয় মূল্য (টাকা)</label>
-                    <input type="number" id="prodSellPrice" min="0" step="0.01" placeholder="যেমন: ১২০" required>
+                    <label>বিক্রয়মূল্য (টাকা)</label>
+                    <input type="number" id="prodSellPrice" min="0" step="0.01" placeholder="যেমন: ১৪০" required>
                 </div>
             </div>
             <div>
-                <label>মজুদ পরিমাণ</label>
+                <label>স্টক পরিমাণ</label>
                 <input type="number" id="prodQty" min="1" placeholder="যেমন: ৫০" required>
             </div>
-            <button type="submit">স্টকে যোগ করুন</button>
+            <button type="submit">স্টকে পণ্য যোগ করুন</button>
         </form>
 
         <h2 style="margin-top: 25px;">বর্তমান স্টক (Inventory)</h2>
@@ -179,41 +179,40 @@
             <thead>
                 <tr>
                     <th>বারকোড</th>
-                    <th>পণ্য</th>
-                    <th>ক্রয়</th>
-                    <th>বিক্রয়</th>
+                    <th>নাম</th>
+                    <th>ক্রয়মূল্য</th>
+                    <th>বিক্রয়মূল্য</th>
                     <th>স্টক</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
 
-        <!-- টোটাল স্টক ভ্যালু -->
         <div class="stock-value-area">
-            মোট স্টক ভ্যালু (কেনা দাম): ৳<span id="totalStockValue">০</span>
+            মোট স্টক ভ্যালু (কেনা দামে): ৳<span id="totalStockValue">0</span>
         </div>
     </div>
 
-    <!-- ফুটার সেকশন -->
+    <!-- ফুটার -->
     <footer>
-        <div class="footer-line-1">বাকি বিক্রি হয় না</div>
-        <div class="footer-line-2">অল্প লভ্যাংশের দোকান</div>
-        <div class="footer-line-3">© সর্বস্বত্ব সংরক্ষিত - আয়ানজ ডিজিটাল গ্রোসেরি</div>
+        <div class="footer-line-1">বাকি চাওয়া নিষেধ</div>
+        <div class="footer-line-2">ধন্যবাদ আবার আসবেন</div>
+        <div class="footer-line-3">রাজু ডিজিটাল মুদি স্টোর - ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</div>
     </footer>
 </div>
 
-<!-- প্রিন্ট করার জন্য হিডেন ক্যাশমেমো এরিয়া -->
+<!-- প্রিন্ট মেমো টেমপ্লেট -->
 <div id="printableMemo">
-    <div class="memo-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-    <h2>আয়ানজ ডিজিটাল গ্রোসেরি</h2>
-    <p style="text-align:center; font-size:10px;">মোহাম্মদপুর, ঢাকা | মোবাইল: ০১XXXXXXXXX</p>
+    <div class="memo-bismillah">বিসমিল্লাহির রহমানির রহিম</div>
+    <h2>রাজু ডিজিটাল মুদি স্টোর</h2>
+    <p style="text-align:center; font-size:10px;">পাইকারি ও খুচরা বিক্রেতা | মোবাইল: 01XXXXXXXXX</p>
     <p style="text-align:center; margin-bottom:10px;">------------------------------------</p>
     <p>তারিখ: <span id="memoDate"></span></p>
     <p>মেমো নং: <span id="memoNo"></span></p>
     <table>
         <thead>
             <tr>
-                <th style="text-align:left;">আইটেম</th>
+                <th style="text-align:left;">পণ্য</th>
                 <th style="text-align:center;">পরিমাণ</th>
                 <th style="text-align:right;">মূল্য</th>
             </tr>
@@ -221,8 +220,8 @@
         <tbody id="memoBody"></tbody>
     </table>
     <h3 style="text-align:right; margin-top:10px;">সর্বমোট: ৳<span id="memoTotal"></span></h3>
-    <div class="memo-footer-no-credit">*** বাকি বিক্রি হয় না ***</div>
-    <div class="memo-instruction">দোকান ত্যাগের আগে আপনার মালামাল, ভাঙতি টাকা ও রশিদ বুঝিয়ে নিবেন।</div>
+    <div class="memo-footer-no-credit">*** বাকি বিক্রি সম্পূর্ণ বন্ধ ***</div>
+    <div class="memo-instruction">বিক্রীত পণ্য ফেরত নেওয়া হয় না, পরিবর্তনের সুযোগ প্রযোজ্য</div>
     <div class="memo-thanks">ধন্যবাদ আবার আসবেন!</div>
 </div>
 
@@ -240,7 +239,6 @@
     const barcodeScannerInput = document.getElementById('barcodeScanner');
     const totalStockValueSpan = document.getElementById('totalStockValue');
 
-    // UI ও ড্যাশবোর্ড আপডেট
     function updateUI() {
         inventoryTable.innerHTML = '';
         cartProductSelect.innerHTML = '<option value="">পণ্য বেছে নিন...</option>';
@@ -250,7 +248,6 @@
             let row = inventoryTable.insertRow();
             row.innerHTML = `<td><code>${item.barcode}</code></td><td>${item.name}</td><td>৳${item.buyPrice}</td><td>৳${item.sellPrice}</td><td>${item.qty}</td>`;
 
-            // মোট স্টক ভ্যালু হিসাব (ক্রয় মূল্য * পরিমাণ)
             stockValue += (item.buyPrice * item.qty);
 
             if(item.qty > 0) {
@@ -267,7 +264,6 @@
         localStorage.setItem('grocery_sales_v3', JSON.stringify(salesHistory));
     }
 
-    // লাভ-ক্ষতি হিসাব
     function calculateProfitDashboard() {
         let totalSales = 0;
         let totalCost = 0;
@@ -284,7 +280,6 @@
         document.getElementById('dashProfit').textContent = profit.toFixed(2);
     }
 
-    // পণ্য যোগ / আপডেট
     productForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const barcode = document.getElementById('prodBarcode').value.trim();
@@ -308,7 +303,6 @@
         barcodeScannerInput.focus();
     });
 
-    // বারকোড অটো স্ক্যান
     barcodeScannerInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -326,7 +320,6 @@
         }
     });
 
-    // ম্যানুয়াল ড্রপডাউন থেকে কার্টে যোগ
     cartForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const index = cartProductSelect.value;
@@ -377,7 +370,6 @@
         grandTotalSpan.textContent = grandTotal;
     }
 
-    // বিক্রি সম্পন্ন করা ও মেমো প্রিন্ট
     function checkoutAndPrint() {
         if(cart.length === 0) {
             alert('কার্ট খালি!');
@@ -385,7 +377,7 @@
         }
 
         let grandTotal = parseFloat(grandTotalSpan.textContent);
-        let confirmPay = confirm(`সর্বমোট ৳${grandTotal} টাকা নগদে গ্রহণ করেছেন?`);
+        let confirmPay = confirm(`সর্বমোট ৳${grandTotal} টাকা গ্রহণ করা হয়েছে?`);
 
         if(confirmPay) {
             document.getElementById('memoDate').textContent = new Date().toLocaleDateString('bn-BD') + ' ' + new Date().toLocaleTimeString('bn-BD');
@@ -402,7 +394,6 @@
                 </tr>`;
                 memoBody.innerHTML += row;
 
-                // সেলস হিস্টোরিতে লাভ রেকর্ডিং
                 salesHistory.push({
                     name: item.name,
                     qty: item.qty,
@@ -412,7 +403,6 @@
                     date: new Date().toISOString()
                 });
 
-                // স্টক কমানো
                 inventory[item.inventoryIndex].qty -= item.qty;
             });
 
@@ -427,14 +417,13 @@
         }
     }
 
-    // এক্সেল (CSV) ব্যাকআপ এক্সপোর্ট
     function exportInventoryToExcel() {
         if (inventory.length === 0) {
-            alert('ডাউনলোড করার মতো কোনো ইনভেন্টরি ডাটা নেই!');
+            alert('ডাউনলোড করার জন্য কোনো তথ্য নেই!');
             return;
         }
 
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // UTF-8 BOM Bangla Support
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
         csvContent += "Barcode,Product Name,Buying Price,Selling Price,Stock Quantity\n";
 
         inventory.forEach(item => {
@@ -445,7 +434,7 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Grocery_Stock_Backup_${new Date().toISOString().slice(0,10)}.csv`);
+        link.setAttribute("download", `Raju_Store_Stock_${new Date().toISOString().slice(0,10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
