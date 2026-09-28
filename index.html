@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আয়ানজ ডিজিটাল গ্রোসেরি - স্টক, লাভ-ক্ষতি ও এক্সেল ব্যাকআপ</title>
+    <title>আয়ানজ ডিজিটাল গ্রোসেরি - POS & স্টক ম্যানেজমেন্ট</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; padding: 20px; color: #333; }
@@ -17,9 +17,6 @@
         .dash-card h3 { font-size: 13px; color: #7f8c8d; margin-bottom: 5px; }
         .dash-card p { font-size: 20px; font-weight: bold; color: #2c3e50; }
         .dash-card.profit p { color: #27ae60; }
-        
-        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
         
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .card h2 { font-size: 18px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
@@ -78,7 +75,56 @@
         <p>স্মার্ট ইনভেন্টরি, লাভ-ক্ষতি হিসাব ও এক্সেল ব্যাকআপ</p>
     </header>
 
-    <!-- লাভ-ক্ষতি ড্যাশবোর্ড -->
+    <!-- ১. ওপরের সেকশন: বিক্রয় ও ক্যাশ কাউন্টার (POS) -->
+    <div class="card">
+        <span class="badge-no-credit">বাকি সম্পূর্ণ বন্ধ</span>
+        <h2>বিক্রি / ক্যাশ কাউন্টার (POS)</h2>
+        
+        <div class="scanner-box">
+            <label style="color: #27ae60;">⚡ বারকোড স্ক্যানার ইনপুট (Auto-Scan):</label>
+            <input type="text" id="barcodeScanner" placeholder="এখানে কার্সার রেখে স্ক্যান করুন..." autofocus>
+        </div>
+
+        <form id="cartForm">
+            <div class="form-row">
+                <div>
+                    <label>অথবা ম্যানুয়ালি পণ্য বেছে নিন</label>
+                    <select id="cartProduct">
+                        <option value="">পণ্য বেছে নিন...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>পরিমাণ</label>
+                    <input type="number" id="cartQty" min="1" value="1" required>
+                </div>
+            </div>
+            <button type="submit" style="background: #e67e22; margin-top: 5px;">কার্টে যোগ করুন</button>
+        </form>
+
+        <h2 style="margin-top: 25px;">চলতি কার্ট / বিল</h2>
+        <table id="cartTable">
+            <thead>
+                <tr>
+                    <th>পণ্য</th>
+                    <th>পরিমাণ</th>
+                    <th>মোট</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="total-area">
+            সর্বমোট: <span id="grandTotal">০</span> টাকা
+        </div>
+
+        <button class="pay-btn" onclick="checkoutAndPrint()">নগদে পেমেন্ট গ্রহণ ও মেমো প্রিন্ট করুন</button>
+
+        <div class="notice-box">
+            <strong>বাকির কোনো অপশন নেই:</strong> এই সিস্টেমে সম্পূর্ণ ক্যাশ রিসিভ করার পর বিক্রি সম্পন্ন হয় এবং লাভ স্বয়ংক্রিয়ভাবে হিসাব হয়।
+        </div>
+    </div>
+
+    <!-- ২. লাভ-ক্ষতি ড্যাশবোর্ড -->
     <div class="dashboard">
         <div class="dash-card">
             <h3>মোট বিক্রি (Sales)</h3>
@@ -94,14 +140,14 @@
         </div>
     </div>
 
-    <div class="container">
-        <!-- ইনভেন্টরি সেকশন -->
-        <div class="card">
-            <h2>
-                পণ্য যোগ করুন
-                <button class="btn-excel" onclick="exportInventoryToExcel()">📊 এক্সেল ব্যাকআপ ডাউনলোড</button>
-            </h2>
-            <form id="productForm">
+    <!-- ৩. নিচের সেকশন: স্টক এড ও ইনভেন্টরি ম্যানেজমেন্ট -->
+    <div class="card">
+        <h2>
+            পণ্য যোগ করুন (স্টক ইন)
+            <button class="btn-excel" onclick="exportInventoryToExcel()">📊 এক্সেল ব্যাকআপ ডাউনলোড</button>
+        </h2>
+        <form id="productForm">
+            <div class="form-row">
                 <div>
                     <label>বারকোড (Barcode)</label>
                     <input type="text" id="prodBarcode" placeholder="স্ক্যান করুন বা লিখুন" required>
@@ -110,88 +156,41 @@
                     <label>পণ্যের নাম</label>
                     <input type="text" id="prodName" placeholder="যেমন: মিনিকেট চাল" required>
                 </div>
-                <div class="form-row">
-                    <div>
-                        <label>ক্রয় মূল্য (টাকা)</label>
-                        <input type="number" id="prodBuyPrice" min="0" step="0.01" placeholder="যেমন: ১০০" required>
-                    </div>
-                    <div>
-                        <label>বিক্রয় মূল্য (টাকা)</label>
-                        <input type="number" id="prodSellPrice" min="0" step="0.01" placeholder="যেমন: ১২০" required>
-                    </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>ক্রয় মূল্য (টাকা)</label>
+                    <input type="number" id="prodBuyPrice" min="0" step="0.01" placeholder="যেমন: ১০০" required>
                 </div>
                 <div>
-                    <label>মজুদ পরিমাণ</label>
-                    <input type="number" id="prodQty" min="1" placeholder="যেমন: ৫০" required>
+                    <label>বিক্রয় মূল্য (টাকা)</label>
+                    <input type="number" id="prodSellPrice" min="0" step="0.01" placeholder="যেমন: ১২০" required>
                 </div>
-                <button type="submit">স্টকে যোগ করুন</button>
-            </form>
-
-            <h2 style="margin-top: 25px;">বর্তমান স্টক (Inventory)</h2>
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>বারকোড</th>
-                        <th>পণ্য</th>
-                        <th>ক্রয়</th>
-                        <th>বিক্রয়</th>
-                        <th>স্টক</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-
-            <!-- টোটাল স্টক ভ্যালু -->
-            <div class="stock-value-area">
-                মোট স্টক ভ্যালু (কেনা দাম): ৳<span id="totalStockValue">০</span>
             </div>
-        </div>
-
-        <!-- বিক্রয় ও ক্যাশ কাউন্টার -->
-        <div class="card">
-            <span class="badge-no-credit">বাকি সম্পূর্ণ বন্ধ</span>
-            <h2>বিক্রি / ক্যাশ কাউন্টার (POS)</h2>
-            
-            <div class="scanner-box">
-                <label style="color: #27ae60;">⚡ বারকোড স্ক্যানার ইনপুট (Auto-Scan):</label>
-                <input type="text" id="barcodeScanner" placeholder="এখানে কার্সার রেখে স্ক্যান করুন..." autofocus>
+            <div>
+                <label>মজুদ পরিমাণ</label>
+                <input type="number" id="prodQty" min="1" placeholder="যেমন: ৫০" required>
             </div>
+            <button type="submit">স্টকে যোগ করুন</button>
+        </form>
 
-            <form id="cartForm">
-                <div>
-                    <label>অথবা ম্যানুয়ালি পণ্য বেছে নিন</label>
-                    <select id="cartProduct">
-                        <option value="">পণ্য বেছে নিন...</option>
-                    </select>
-                </div>
-                <div>
-                    <label>পরিমাণ</label>
-                    <input type="number" id="cartQty" min="1" value="1" required>
-                </div>
-                <button type="submit" style="background: #e67e22;">কার্টে যোগ করুন</button>
-            </form>
+        <h2 style="margin-top: 25px;">বর্তমান স্টক (Inventory)</h2>
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>বারকোড</th>
+                    <th>পণ্য</th>
+                    <th>ক্রয়</th>
+                    <th>বিক্রয়</th>
+                    <th>স্টক</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-            <h2 style="margin-top: 25px;">চলতি কার্ট / বিল</h2>
-            <table id="cartTable">
-                <thead>
-                    <tr>
-                        <th>পণ্য</th>
-                        <th>পরিমাণ</th>
-                        <th>মোট</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-
-            <div class="total-area">
-                সর্বমোট: <span id="grandTotal">০</span> টাকা
-            </div>
-
-            <button class="pay-btn" onclick="checkoutAndPrint()">নগদে পেমেন্ট গ্রহণ ও মেমো প্রিন্ট করুন</button>
-
-            <div class="notice-box">
-                <strong>বাকির কোনো অপশন নেই:</strong> এই সিস্টেমে সম্পূর্ণ ক্যাশ রিসিভ করার পর বিক্রি সম্পন্ন হয় এবং লাভ স্বয়ংক্রিয়ভাবে হিসাব হয়।
-            </div>
+        <!-- টোটাল স্টক ভ্যালু -->
+        <div class="stock-value-area">
+            মোট স্টক ভ্যালু (কেনা দাম): ৳<span id="totalStockValue">০</span>
         </div>
     </div>
 
