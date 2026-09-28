@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আয়ানজ ডিজিটাল মুদি দোকান - স্টক, লাভ-ক্ষতি ও এক্সেল ব্যাকআপ</title>
+    <title>আয়ানজ ডিজিটাল গ্রোসেরি - স্টক, লাভ-ক্ষতি ও এক্সেল ব্যাকআপ</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; padding: 20px; color: #333; }
@@ -43,6 +43,7 @@
         .notice-box { background: #fde8e8; border-left: 4px solid #e74c3c; padding: 10px; margin-top: 15px; font-size: 13px; color: #c0392b; }
         
         .total-area { font-size: 18px; font-weight: bold; text-align: right; margin-top: 15px; color: #2c3e50; }
+        .stock-value-area { font-size: 16px; font-weight: bold; text-align: right; margin-top: 15px; padding: 10px; background: #eef9f1; border-radius: 6px; color: #1e824c; }
         .pay-btn { background: #2980b9; margin-top: 10px; font-size: 16px; }
         .pay-btn:hover { background: #2471a3; }
 
@@ -62,7 +63,9 @@
             #printableMemo table { width: 100%; border-collapse: collapse; margin-top: 10px; }
             #printableMemo th, #printableMemo td { border-bottom: 1px dashed #000; padding: 4px 0; border-top: none; border-left: none; border-right: none; }
             #printableMemo .memo-bismillah { text-align: center; font-size: 12px; margin-bottom: 5px; }
-            #printableMemo .memo-footer-no-credit { color: #e74c3c; font-weight: bold; font-size: 14px; text-align: center; margin-top: 10px; }
+            #printableMemo .memo-footer-no-credit { color: #e74c3c; font-weight: bold; font-size: 13px; text-align: center; margin-top: 10px; }
+            #printableMemo .memo-instruction { font-size: 10px; text-align: center; margin-top: 6px; font-weight: bold; }
+            #printableMemo .memo-thanks { font-size: 11px; text-align: center; margin-top: 6px; font-weight: bold; color: #1e824c; }
         }
     </style>
 </head>
@@ -71,7 +74,7 @@
 <div id="mainUI">
     <header>
         <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-        <h1>আয়ানজ ডিজিটাল মুদি দোকান</h1>
+        <h1>আয়ানজ ডিজিটাল গ্রোসেরি</h1>
         <p>স্মার্ট ইনভেন্টরি, লাভ-ক্ষতি হিসাব ও এক্সেল ব্যাকআপ</p>
     </header>
 
@@ -137,6 +140,11 @@
                 </thead>
                 <tbody></tbody>
             </table>
+
+            <!-- টোটাল স্টক ভ্যালু -->
+            <div class="stock-value-area">
+                মোট স্টক ভ্যালু (কেনা দাম): ৳<span id="totalStockValue">০</span>
+            </div>
         </div>
 
         <!-- বিক্রয় ও ক্যাশ কাউন্টার -->
@@ -191,14 +199,14 @@
     <footer>
         <div class="footer-line-1">বাকি বিক্রি হয় না</div>
         <div class="footer-line-2">অল্প লভ্যাংশের দোকান</div>
-        <div class="footer-line-3">© সর্বস্বত্ব সংরক্ষিত - আয়ানজ ডিজিটাল মুদি দোকান</div>
+        <div class="footer-line-3">© সর্বস্বত্ব সংরক্ষিত - আয়ানজ ডিজিটাল গ্রোসেরি</div>
     </footer>
 </div>
 
 <!-- প্রিন্ট করার জন্য হিডেন ক্যাশমেমো এরিয়া -->
 <div id="printableMemo">
     <div class="memo-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-    <h2>ডিজিটাল মুদি দোকান</h2>
+    <h2>আয়ানজ ডিজিটাল গ্রোসেরি</h2>
     <p style="text-align:center; font-size:10px;">মোহাম্মদপুর, ঢাকা | মোবাইল: ০১XXXXXXXXX</p>
     <p style="text-align:center; margin-bottom:10px;">------------------------------------</p>
     <p>তারিখ: <span id="memoDate"></span></p>
@@ -215,7 +223,8 @@
     </table>
     <h3 style="text-align:right; margin-top:10px;">সর্বমোট: ৳<span id="memoTotal"></span></h3>
     <div class="memo-footer-no-credit">*** বাকি বিক্রি হয় না ***</div>
-    <p style="text-align:center; margin-top:5px; font-size:10px;">অল্প লভ্যাংশের দোকান<br>ধন্যবাদ আবার আসবেন!</p>
+    <div class="memo-instruction">দোকান ত্যাগের আগে আপনার মালামাল, ভাঙতি টাকা ও রশিদ বুঝিয়ে নিবেন।</div>
+    <div class="memo-thanks">ধন্যবাদ আবার আসবেন!</div>
 </div>
 
 <script>
@@ -230,15 +239,20 @@
     const cartProductSelect = document.getElementById('cartProduct');
     const grandTotalSpan = document.getElementById('grandTotal');
     const barcodeScannerInput = document.getElementById('barcodeScanner');
+    const totalStockValueSpan = document.getElementById('totalStockValue');
 
     // UI ও ড্যাশবোর্ড আপডেট
     function updateUI() {
         inventoryTable.innerHTML = '';
         cartProductSelect.innerHTML = '<option value="">পণ্য বেছে নিন...</option>';
+        let stockValue = 0;
 
         inventory.forEach((item, index) => {
             let row = inventoryTable.insertRow();
             row.innerHTML = `<td><code>${item.barcode}</code></td><td>${item.name}</td><td>৳${item.buyPrice}</td><td>৳${item.sellPrice}</td><td>${item.qty}</td>`;
+
+            // মোট স্টক ভ্যালু হিসাব (ক্রয় মূল্য * পরিমাণ)
+            stockValue += (item.buyPrice * item.qty);
 
             if(item.qty > 0) {
                 let option = document.createElement('option');
@@ -248,6 +262,7 @@
             }
         });
 
+        totalStockValueSpan.textContent = stockValue.toFixed(2);
         calculateProfitDashboard();
         localStorage.setItem('grocery_inventory_v3', JSON.stringify(inventory));
         localStorage.setItem('grocery_sales_v3', JSON.stringify(salesHistory));
