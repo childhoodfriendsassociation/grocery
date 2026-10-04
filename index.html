@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>রাজু ডিজিটাল মুদি স্টোর - POS & স্টক ম্যানেজমেন্ট</title>
+    <title>ডিজিটাল মুদি স্টোর - POS & স্টক ম্যানেজমেন্ট</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; padding: 20px; color: #333; }
-        header { background: #1e824c; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
-        .bismillah { font-size: 20px; font-weight: bold; font-family: 'Amiri', 'Traditional Arabic', serif; margin-bottom: 8px; color: #f1c40f; }
-        header h1 { font-size: 22px; }
-        header p { font-size: 13px; color: #d4efdf; margin-top: 5px; }
+        
+        header { background: #1e824c; color: white; padding: 20px 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; position: relative; }
+        .header-center-content { margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 15px; }
+        .bismillah { font-size: 18px; font-weight: bold; font-family: 'Amiri', 'Traditional Arabic', serif; margin-bottom: 5px; color: #f1c40f; }
+        header h1 { font-size: 22px; margin-bottom: 3px; }
+        header p { font-size: 13px; color: #d4efdf; }
+
+        /* উইজেট স্টাইল - ২ লাইনে ২ কলাম */
+        .widgets-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 400px; margin: 0 auto; }
+        .widget-item { background: rgba(0, 0, 0, 0.15); padding: 6px 10px; border-radius: 6px; font-size: 12px; text-align: center; cursor: pointer; }
         
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .dash-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
@@ -19,7 +25,9 @@
         .dash-card.profit p { color: #27ae60; }
         
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .card h2 { font-size: 18px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .card h2 { font-size: 18px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        
+        .btn-group { display: flex; gap: 8px; align-items: center; }
         
         form div { margin-bottom: 10px; }
         label { display: block; font-size: 13px; margin-bottom: 5px; font-weight: bold; }
@@ -28,14 +36,18 @@
         
         button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
         button:hover { background: #219150; }
-        .btn-excel { background: #1d6f42; width: auto; font-size: 12px; padding: 6px 12px; }
-        .btn-excel:hover { background: #144d2e; }
+        
+        .btn-action { background: #1d6f42; width: auto; font-size: 12px; padding: 6px 12px; border-radius: 4px; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-action:hover { background: #144d2e; }
+        .btn-upload { background: #2980b9; }
+        .btn-upload:hover { background: #2471a3; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f8f9fa; }
         
-        .badge-no-credit { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; display: inline-block; margin-bottom: 10px; }
+        /* ছোট ও সুন্দর নোটিশ ব্যাজ */
+        .badge-no-credit { background: #e74c3c; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; display: inline-block; margin-bottom: 10px; font-weight: 500; }
         .scanner-box { background: #e8f8f5; border: 2px dashed #27ae60; padding: 12px; margin-bottom: 15px; border-radius: 6px; }
         .notice-box { background: #fde8e8; border-left: 4px solid #e74c3c; padding: 10px; margin-top: 15px; font-size: 13px; color: #c0392b; }
         
@@ -46,7 +58,7 @@
 
         /* ফুটার স্টাইল */
         footer { margin-top: 30px; padding: 20px; background: white; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .footer-line-1 { font-size: 24px; font-weight: bold; color: #e74c3c; margin-bottom: 8px; text-transform: uppercase; }
+        .footer-line-1 { font-size: 13px; font-weight: 600; color: #e74c3c; margin-bottom: 8px; background: #fde8e8; display: inline-block; padding: 5px 12px; border-radius: 12px; }
         .footer-line-2 { font-size: 16px; font-weight: 600; color: #27ae60; margin-bottom: 10px; }
         .footer-line-3 { font-size: 12px; color: #7f8c8d; border-top: 1px solid #ecf0f1; padding-top: 10px; margin-top: 10px; }
 
@@ -60,7 +72,7 @@
             #printableMemo table { width: 100%; border-collapse: collapse; margin-top: 10px; }
             #printableMemo th, #printableMemo td { border-bottom: 1px dashed #000; padding: 4px 0; border-top: none; border-left: none; border-right: none; }
             #printableMemo .memo-bismillah { text-align: center; font-size: 12px; margin-bottom: 5px; }
-            #printableMemo .memo-footer-no-credit { color: #e74c3c; font-weight: bold; font-size: 13px; text-align: center; margin-top: 10px; }
+            #printableMemo .memo-footer-no-credit { color: #e74c3c; font-weight: bold; font-size: 11px; text-align: center; margin-top: 10px; }
             #printableMemo .memo-instruction { font-size: 10px; text-align: center; margin-top: 6px; font-weight: bold; }
             #printableMemo .memo-thanks { font-size: 11px; text-align: center; margin-top: 6px; font-weight: bold; color: #1e824c; }
         }
@@ -70,14 +82,24 @@
 
 <div id="mainUI">
     <header>
-        <div class="bismillah">বিসমিল্লাহির রহমানির রহিম</div>
-        <h1>রাজু ডিজিটাল মুদি স্টোর</h1>
-        <p>পাইকারি ও খুচরা বিক্রেতা, চাল-ডাল ও যাবতীয় মুদি মালামাল</p>
+        <div class="header-center-content">
+            <div class="bismillah">বিসমিল্লাহির রহমানির রহিম</div>
+            <h1>ডিজিটাল মুদি স্টোর</h1>
+            <p>পাইকারি ও খুচরা বিক্রেতা, চাল-ডাল ও যাবতীয় মুদি মালামাল</p>
+        </div>
+        
+        <!-- উইজেটসমূহ: ডিভাইস লোকেশন এবং আবহাওয়া (ক্লিক করলে রিফ্রেশ হবে) -->
+        <div class="widgets-grid">
+            <div class="widget-item" id="locationDisplay" onclick="trackUserLocationAndWeather()" title="লোকেশন রিফ্রেশ করতে ক্লিক করুন">📍 লোকেশন ট্র্যাক হচ্ছে...</div>
+            <div class="widget-item" id="dateDisplay">📅 লোড হচ্ছে...</div>
+            <div class="widget-item" id="timeDisplay">⏰ লোড হচ্ছে...</div>
+            <div class="widget-item" id="weatherDisplay">🌤️ আবহাওয়া: লোড হচ্ছে...</div>
+        </div>
     </header>
 
     <!-- ১. বিক্রয় কাউন্টার: বারকোড ও ম্যানুয়াল বিলিং (POS) -->
     <div class="card">
-        <span class="badge-no-credit">বাকি সম্পূর্ণ বন্ধ</span>
+        <span class="badge-no-credit">ডিজিটাল সিস্টেম বাকি বিক্রির তথ্য গ্রহণ করে না। দয়া করে নগদে পণ্য খরিদ করুন।</span>
         <h2>বিক্রয় / ক্যাশ কাউন্টার (POS)</h2>
         
         <div class="scanner-box">
@@ -143,8 +165,16 @@
     <!-- ৩. স্টক ও ইনভেন্টরি ম্যানেজমেন্ট -->
     <div class="card">
         <h2>
-            পণ্য এন্ট্রি (স্টক জমা)
-            <button class="btn-excel" onclick="exportInventoryToExcel()">এক্সেল রিপোর্ট ডাউনলোড</button>
+            <span>পণ্য এন্ট্রি (স্টক জমা)</span>
+            <div class="btn-group">
+                <button class="btn-action" onclick="exportDataBackup()" title="এক্সেল ব্যাকআপ ডাউনলোড">
+                    📥 ব্যাকআপ ডাউনলোড
+                </button>
+                <label class="btn-action btn-upload" title="ব্যাকআপ ফাইল রিস্টোর/আপলোড" style="margin-bottom:0;">
+                    📤 ব্যাকআপ রিস্টোর
+                    <input type="file" id="restoreFile" accept=".csv" style="display: none;" onchange="importDataBackup(event)">
+                </label>
+            </div>
         </h2>
         <form id="productForm">
             <div class="form-row">
@@ -195,16 +225,16 @@
 
     <!-- ফুটার -->
     <footer>
-        <div class="footer-line-1">বাকি চাওয়া নিষেধ</div>
+        <div class="footer-line-1">ডিজিটাল সিস্টেম বাকি বিক্রির তথ্য গ্রহণ করে না। দয়া করে নগদে পণ্য খরিদ করুন।</div>
         <div class="footer-line-2">ধন্যবাদ আবার আসবেন</div>
-        <div class="footer-line-3">রাজু ডিজিটাল মুদি স্টোর - ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</div>
+        <div class="footer-line-3">ডিজিটাল মুদি স্টোর - ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</div>
     </footer>
 </div>
 
 <!-- প্রিন্ট মেমো টেমপ্লেট -->
 <div id="printableMemo">
     <div class="memo-bismillah">বিসমিল্লাহির রহমানির রহিম</div>
-    <h2>রাজু ডিজিটাল মুদি স্টোর</h2>
+    <h2>ডিজিটাল মুদি স্টোর</h2>
     <p style="text-align:center; font-size:10px;">পাইকারি ও খুচরা বিক্রেতা | মোবাইল: 01XXXXXXXXX</p>
     <p style="text-align:center; margin-bottom:10px;">------------------------------------</p>
     <p>তারিখ: <span id="memoDate"></span></p>
@@ -220,14 +250,14 @@
         <tbody id="memoBody"></tbody>
     </table>
     <h3 style="text-align:right; margin-top:10px;">সর্বমোট: ৳<span id="memoTotal"></span></h3>
-    <div class="memo-footer-no-credit">*** বাকি বিক্রি সম্পূর্ণ বন্ধ ***</div>
+    <div class="memo-footer-no-credit">ডিজিটাল সিস্টেম বাকি বিক্রির তথ্য গ্রহণ করে না। দয়া করে নগদে পণ্য খরিদ করুন।</div>
     <div class="memo-instruction">বিক্রীত পণ্য ফেরত নেওয়া হয় না, পরিবর্তনের সুযোগ প্রযোজ্য</div>
     <div class="memo-thanks">ধন্যবাদ আবার আসবেন!</div>
 </div>
 
 <script>
-    let inventory = JSON.parse(localStorage.getItem('grocery_inventory_v3')) || [];
-    let salesHistory = JSON.parse(localStorage.getItem('grocery_sales_v3')) || [];
+    let inventory = JSON.parse(localStorage.getItem('grocery_inventory_v8')) || [];
+    let salesHistory = JSON.parse(localStorage.getItem('grocery_sales_v8')) || [];
     let cart = [];
 
     const productForm = document.getElementById('productForm');
@@ -238,6 +268,80 @@
     const grandTotalSpan = document.getElementById('grandTotal');
     const barcodeScannerInput = document.getElementById('barcodeScanner');
     const totalStockValueSpan = document.getElementById('totalStockValue');
+
+    // তারিখ এবং সময় আপডেট ফাংশন
+    function updateDateTime() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+        const timeStr = now.toLocaleTimeString('bn-BD');
+        document.getElementById('dateDisplay').innerHTML = `📅 ${dateStr}`;
+        document.getElementById('timeDisplay').innerHTML = `⏰ ${timeStr}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // ডিভাইস লোকেশন ও আবহাওয়া ট্র্যাক করার ফাংশন (দ্রুত রেসপন্স ও আইপি ফলব্যাকসহ)
+    function trackUserLocationAndWeather() {
+        document.getElementById('locationDisplay').innerHTML = `📍 লোকেশন খোঁজা হচ্ছে...`;
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                fetchLocationDetails(lat, lon);
+            }, (error) => {
+                // জিপিএস পারমিশন না পেলে ফ্রি আইপি লোকেশন API ব্যবহার করা হবে যাতে সাথে সাথে এলাকা দেখায়
+                fetchIpLocation();
+            }, { timeout: 7000, enableHighAccuracy: true });
+        } else {
+            fetchIpLocation();
+        }
+    }
+
+    async function fetchLocationDetails(lat, lon) {
+        try {
+            let geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=bn`);
+            let geoData = await geoRes.json();
+            let address = geoData.address || {};
+            let locationName = address.city || address.town || address.suburb || address.village || address.county || address.state || "বাংলাদেশ";
+            document.getElementById('locationDisplay').innerHTML = `📍 ${locationName}`;
+        } catch (e) {
+            document.getElementById('locationDisplay').innerHTML = `📍 বাংলাদেশ`;
+        }
+        fetchWeather(lat, lon);
+    }
+
+    async function fetchIpLocation() {
+        try {
+            let res = await fetch(`https://ipapi.co/json/`);
+            let data = await res.json();
+            if(data && data.city) {
+                document.getElementById('locationDisplay').innerHTML = `📍 ${data.city}`;
+                fetchWeather(data.latitude, data.longitude);
+            } else {
+                document.getElementById('locationDisplay').innerHTML = `📍 ঢাকা, বাংলাদেশ`;
+                fetchWeather(23.8103, 90.4125);
+            }
+        } catch (e) {
+            document.getElementById('locationDisplay').innerHTML = `📍 ঢাকা, বাংলাদেশ`;
+            fetchWeather(23.8103, 90.4125);
+        }
+    }
+
+    async function fetchWeather(lat, lon) {
+        try {
+            let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+            let weatherData = await weatherRes.json();
+            if(weatherData && weatherData.current_weather) {
+                const temp = weatherData.current_weather.temperature;
+                document.getElementById('weatherDisplay').innerHTML = `🌤️ আবহাওয়া: ${temp}°C`;
+            }
+        } catch (e) {
+            document.getElementById('weatherDisplay').innerHTML = `🌤️ আবহাওয়া: তথ্য অনুপলব্ধ`;
+        }
+    }
+
+    trackUserLocationAndWeather();
 
     function updateUI() {
         inventoryTable.innerHTML = '';
@@ -260,8 +364,8 @@
 
         totalStockValueSpan.textContent = stockValue.toFixed(2);
         calculateProfitDashboard();
-        localStorage.setItem('grocery_inventory_v3', JSON.stringify(inventory));
-        localStorage.setItem('grocery_sales_v3', JSON.stringify(salesHistory));
+        localStorage.setItem('grocery_inventory_v8', JSON.stringify(inventory));
+        localStorage.setItem('grocery_sales_v8', JSON.stringify(salesHistory));
     }
 
     function calculateProfitDashboard() {
@@ -417,9 +521,10 @@
         }
     }
 
-    function exportInventoryToExcel() {
+    // ব্যাকআপ ডাউনলোড (Export to CSV)
+    function exportDataBackup() {
         if (inventory.length === 0) {
-            alert('ডাউনলোড করার জন্য কোনো তথ্য নেই!');
+            alert('ব্যাকআপ নেওয়ার জন্য কোনো ইনভেন্টরি ডাটা নেই!');
             return;
         }
 
@@ -434,10 +539,61 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Raju_Store_Stock_${new Date().toISOString().slice(0,10)}.csv`);
+        link.setAttribute("download", `Store_Backup_${new Date().toISOString().slice(0,10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    // ব্যাকআপ রিস্টোর/আপলোড (Import from CSV)
+    function importDataBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split("\n");
+            let newInventory = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line) continue;
+
+                let row = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!row || row.length < 5) {
+                    let simpleCols = line.split(',');
+                    if(simpleCols.length >= 5) {
+                        newInventory.push({
+                            barcode: simpleCols[0].replace(/"/g, '').trim(),
+                            name: simpleCols[1].replace(/"/g, '').trim(),
+                            buyPrice: parseFloat(simpleCols[2]) || 0,
+                            sellPrice: parseFloat(simpleCols[3]) || 0,
+                            qty: parseInt(simpleCols[4]) || 0
+                        });
+                    }
+                    continue;
+                }
+
+                newInventory.push({
+                    barcode: row[0].replace(/"/g, '').trim(),
+                    name: row[1].replace(/"/g, '').trim(),
+                    buyPrice: parseFloat(row[2].replace(/"/g, '')) || 0,
+                    sellPrice: parseFloat(row[3].replace(/"/g, '')) || 0,
+                    qty: parseInt(row[4].replace(/"/g, '')) || 0
+                });
+            }
+
+            if (newInventory.length > 0) {
+                inventory = newInventory;
+                updateUI();
+                alert('সফলভাবে ব্যাকআপ ফাইল রিস্টোর করা হয়েছে!');
+            } else {
+                alert('ফাইল ফরম্যাট সঠিক নয়!');
+            }
+            event.target.value = '';
+        };
+        reader.readAsText(file);
     }
 
     updateUI();
